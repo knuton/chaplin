@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+  <title>
+     Chaplin.utils &middot;  Chaplin Documentation
+  </title>
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
+  <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="stylesheets/main.css">
+  <link rel="stylesheet" type="text/css" href="stylesheets/pygments.css">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="javascripts/main.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body class="container-fluid">
+  <div class="row-fluid">
+  <div class="span3 sidebar">
+  <header class="site-header">
+    <h1><a href="/" title="Introductory page of the documentation">Chaplin Documentation</a></h1>
+  </header>
+  <nav>
+    <form action="" class="language">
+      <fieldset>
+        <legend>Examples in:</legend>
+        <ul class="languages">
+        <li class="coffeescript">
+          <label>
+            <input type="radio" name="language" value="coffeescript" checked> CoffeeScript
+          </label>
+        </li>
+        <li class="javascript">
+          <label>
+            <input type="radio" name="language" value="javascript"> JavaScript
+          </label>
+        </li>
+        </ul>
+      </fieldset>
+    </form>
+    <h2>Modules</h2>
+    
+    <h3 id="toc_0">Core</h3>
+
+<ul>
+<li><a href="./chaplin.mediator.html" title="Global event bus">Chaplin.mediator</a></li>
+<li><a href="./chaplin.dispatcher.html" title="Broker between router and controller">Chaplin.Dispatcher</a></li>
+<li><a href="./chaplin.composer.html" title="Handles reuse of views between controller actions">Chaplin.Composer</a></li>
+<li><a href="./chaplin.layout.html" title="Top-level application view">Chaplin.Layout</a></li>
+<li><a href="./chaplin.application.html" title="Application boostrapper">Chaplin.Application</a></li>
+</ul>
+
+<h3 id="toc_1">MVC</h3>
+
+<ul>
+<li><a href="./chaplin.controller.html" title="For initializing models, collections and views">Chaplin.Controller</a></li>
+<li><a href="./chaplin.model.html" title="Chaplin&rsquo;s extension of `Backbone.Model`">Chaplin.Model</a></li>
+<li><a href="./chaplin.collection.html" title="Chaplin&rsquo;s extension of `Backbone.Collection`">Chaplin.Collection</a></li>
+<li><a href="./chaplin.view.html" title="Chaplin&rsquo;s extension of `Backbone.View`">Chaplin.View</a></li>
+<li><a href="./chaplin.collection_view.html" title="An extension of `Chaplin.View` for displaying collections">Chaplin.CollectionView</a></li>
+</ul>
+
+<h3 id="toc_2">Libs</h3>
+
+<ul>
+<li><a href="./chaplin.event_broker.html" title="Mixin for communication with the mediator">Chaplin.EventBroker</a></li>
+<li><a href="./chaplin.sync_machine.html" title="Mixin for handling sync state">Chaplin.SyncMachine</a></li>
+<li><a href="./chaplin.router.html" title="Replacement for `Backbone.Router`">Chaplin.Router</a></li>
+<li><a href="./chaplin.support.html" title="Detection of browser features">Chaplin.support</a></li>
+<li><a href="./chaplin.utils.html" title="Generic utility functions">Chaplin.utils</a></li>
+<li><a href="./chaplin.helpers.html" title="Helpers with Chaplin integration">Chaplin.helpers</a></li>
+</ul>
+
+  </nav>
+  </div>
+  <div id="content" class="span9">
+    <header class="module-info">
+    
+    <h1>
+      Chaplin.utils
+      
+        <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0-pre/src/chaplin/lib/utils.coffee">&rarr; Source</a>
+      
+    </h1>
+    
+    </header>
+    <p>Chaplin’s utils provide common functions for use throughout the project.</p>
+
+<p>These functions are generic and not related to any specific Chaplin components. Useful functions for messing with Chaplin are available in <a href="chaplin.helpers.html">Chaplin.helpers</a>.</p>
+
+<h3 class="module-member" id="beget">beget(parent)</h3>
+
+<ul>
+<li><strong>returns a new object with <code>parent</code> as its prototype</strong></li>
+</ul>
+
+<p>A standard Javascript helper function that creates an object which delegates to another object. (see Douglas Crockford&#39;s <em>Javascript: The Good Parts</em> for more details). Uses <a href="https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object/create">Object.create</a> when available, and falls back to a polyfill if not present.</p>
+
+<h3 class="module-member" id="readonly">readonly(object, [*properties])</h3>
+
+<ul>
+<li><strong>returns true if successful, false if unsupported by the browser’s runtime</strong></li>
+</ul>
+
+<p>Makes properties of <strong>object</strong> read-only so they cannot be overwritten. The success of this operation depends on the current environment’s support.</p>
+
+<h3 class="module-member" id="getPrototypeChain">getPrototypeChain(object)</h3>
+
+<ul>
+<li><strong>Object object</strong></li>
+</ul>
+
+<p>Gets the whole chain of prototypes for <code>object</code>.</p>
+
+<h3 class="module-member" id="getAllPropertyVersions">getAllPropertyVersions(object, property)</h3>
+
+<ul>
+<li><strong>Object object</strong></li>
+<li><strong>String property</strong></li>
+</ul>
+
+<p>Get all different value versions for <code>property</code> from <code>object</code>’s prototype chain. Usage:</p>
+<div class="highlight"><pre><code class="coffeescript"><span class="k">class</span> <span class="nx">A</span>
+  <span class="nv">prop: </span><span class="mi">1</span>
+<span class="k">class</span> <span class="nx">B</span> <span class="k">extends</span> <span class="nx">A</span>
+  <span class="nv">prop: </span><span class="mi">2</span>
+
+<span class="nv">b = </span><span class="k">new</span> <span class="nx">B</span>
+<span class="nx">getAllPropertyVersions</span> <span class="nx">b</span><span class="p">,</span> <span class="s">&#39;prop&#39;</span>  <span class="c1"># =&gt; [1, 2]</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript"><span class="kd">function</span> <span class="nx">A</span><span class="p">()</span> <span class="p">{}</span>
+<span class="nx">A</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">prop</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+<span class="kd">function</span> <span class="nx">B</span><span class="p">()</span> <span class="p">{}</span>
+<span class="nx">B</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">A</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">B</span><span class="p">;</span>
+<span class="nx">getAllPropertyVersions</span><span class="p">(</span><span class="nx">b</span><span class="p">,</span> <span class="s1">&#39;prop&#39;</span><span class="p">);</span> <span class="c1">// =&gt; [1, 2]</span>
+</code></pre></div>
+<h3 class="module-member" id="upcase">upcase(str)</h3>
+
+<ul>
+<li><strong>String <code>str</code></strong></li>
+<li><strong>returns upcased version of <code>str</code></strong></li>
+</ul>
+
+<p>Ensure the first character of <code>str</code> is capitalized</p>
+<div class="highlight"><pre><code class="coffeescript"><span class="nx">utils</span><span class="p">.</span><span class="nx">upcase</span> <span class="s">&#39;larry bird&#39;</span> <span class="c1"># &#39;Larry bird&#39;</span>
+<span class="nx">utils</span><span class="p">.</span><span class="nx">upcase</span> <span class="s">&#39;AIR&#39;</span>        <span class="c1"># &#39;AIR&#39;</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript"><span class="nx">utils</span><span class="p">.</span><span class="nx">upcase</span><span class="p">(</span><span class="s1">&#39;larry bird&#39;</span><span class="p">);</span> <span class="c1">// &#39;Larry bird&#39;</span>
+<span class="nx">utils</span><span class="p">.</span><span class="nx">upcase</span><span class="p">(</span><span class="s1">&#39;AIR&#39;</span><span class="p">);</span>        <span class="c1">// &#39;AIR&#39;</span>
+</code></pre></div>
+<h3 class="module-member" id="modifierKeyPressed">modifierKeyPressed(event)</h3>
+
+<ul>
+<li><strong>jQuery normalized event object <code>event</code></strong></li>
+<li><strong>returns boolean</strong></li>
+</ul>
+
+<p>Looks at an event object <code>event</code> to determine if the <strong>shift</strong>, <strong>alt</strong>, <strong>ctrl</strong>, or <strong>meta</strong> keys were pressed. Useful in link click handling (i.e. if you need ctrl-click or shift-click to open the link in a new window).</p>
+
+  </div>
+  </div>
+</body>
+</html>

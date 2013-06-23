@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+  <title>
+     Memory Management and Object Disposal &middot;  Chaplin Documentation
+  </title>
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
+  <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="stylesheets/main.css">
+  <link rel="stylesheet" type="text/css" href="stylesheets/pygments.css">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="javascripts/main.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body class="container-fluid">
+  <div class="row-fluid">
+  <div class="span3 sidebar">
+  <header class="site-header">
+    <h1><a href="/" title="Introductory page of the documentation">Chaplin Documentation</a></h1>
+  </header>
+  <nav>
+    <form action="" class="language">
+      <fieldset>
+        <legend>Examples in:</legend>
+        <ul class="languages">
+        <li class="coffeescript">
+          <label>
+            <input type="radio" name="language" value="coffeescript" checked> CoffeeScript
+          </label>
+        </li>
+        <li class="javascript">
+          <label>
+            <input type="radio" name="language" value="javascript"> JavaScript
+          </label>
+        </li>
+        </ul>
+      </fieldset>
+    </form>
+    <h2>Modules</h2>
+    
+    <h3 id="toc_0">Core</h3>
+
+<ul>
+<li><a href="./chaplin.mediator.html" title="Global event bus">Chaplin.mediator</a></li>
+<li><a href="./chaplin.dispatcher.html" title="Broker between router and controller">Chaplin.Dispatcher</a></li>
+<li><a href="./chaplin.composer.html" title="Handles reuse of views between controller actions">Chaplin.Composer</a></li>
+<li><a href="./chaplin.layout.html" title="Top-level application view">Chaplin.Layout</a></li>
+<li><a href="./chaplin.application.html" title="Application boostrapper">Chaplin.Application</a></li>
+</ul>
+
+<h3 id="toc_1">MVC</h3>
+
+<ul>
+<li><a href="./chaplin.controller.html" title="For initializing models, collections and views">Chaplin.Controller</a></li>
+<li><a href="./chaplin.model.html" title="Chaplin&rsquo;s extension of `Backbone.Model`">Chaplin.Model</a></li>
+<li><a href="./chaplin.collection.html" title="Chaplin&rsquo;s extension of `Backbone.Collection`">Chaplin.Collection</a></li>
+<li><a href="./chaplin.view.html" title="Chaplin&rsquo;s extension of `Backbone.View`">Chaplin.View</a></li>
+<li><a href="./chaplin.collection_view.html" title="An extension of `Chaplin.View` for displaying collections">Chaplin.CollectionView</a></li>
+</ul>
+
+<h3 id="toc_2">Libs</h3>
+
+<ul>
+<li><a href="./chaplin.event_broker.html" title="Mixin for communication with the mediator">Chaplin.EventBroker</a></li>
+<li><a href="./chaplin.sync_machine.html" title="Mixin for handling sync state">Chaplin.SyncMachine</a></li>
+<li><a href="./chaplin.router.html" title="Replacement for `Backbone.Router`">Chaplin.Router</a></li>
+<li><a href="./chaplin.support.html" title="Detection of browser features">Chaplin.support</a></li>
+<li><a href="./chaplin.utils.html" title="Generic utility functions">Chaplin.utils</a></li>
+<li><a href="./chaplin.helpers.html" title="Helpers with Chaplin integration">Chaplin.helpers</a></li>
+</ul>
+
+  </nav>
+  </div>
+  <div id="content" class="span9">
+    <header class="module-info">
+    
+    <h1>
+      Memory Management and Object Disposal
+      
+    </h1>
+    
+    </header>
+    <p>A core concern of the Chaplin architecture is proper memory management. While there isn’t a broad discussion about garbage collection in JavaScript applications, it is an important topic. Since Backbone provides little out of the box to help manage memory, Chaplin extends Backbone’s <code>Model</code>, <code>Collection</code> and <code>View</code> classes to implement a powerful disposal process which ensures that each controller, model, collection and view cleans up after itself.</p>
+
+<p>Event handling creates references between objects. If a view listens for model changes, then that model has a reference to a view method in its internal <code>_callbacks</code> list. View methods are often bound to the view instance using <code>Function.prototype.bind</code>, <code>_.bind()</code>, CoffeeScript’s fat arrow <code>=&gt;</code> or alike. When a <code>change</code> handler is bound to the view, the view will remain in memory even if it was already detached from the DOM. The garbage collector can’t free its memory because of this reference.</p>
+
+<p>In Chaplin, before a new controller takes over and the user interface changes, the <code>dispose</code> method of the current controller is invoked:</p>
+
+<ul>
+<li>The controller calls the <code>dispose</code> method on its models/collections and then removes its references to them.</li>
+<li>On disposal, each model clears all of its attributes and disposes all associated views.</li>
+<li>A view’s <code>dispose</code> method removes all of its DOM elements, unsubscribes from DOM or model/collection events and calls <code>dispose</code> on its subviews.</li>
+<li>Models/collections and views unsubscribe from global publish/subscribe events.</li>
+</ul>
+
+<p>This disposal process is quite complex and many objects needs a custom <code>dispose</code> method. But this is just the least Chaplin can do.</p>
+
+  </div>
+  </div>
+</body>
+</html>

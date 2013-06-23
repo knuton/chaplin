@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+  <title>
+     Chaplin.Application &middot;  Chaplin Documentation
+  </title>
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/fonts.css">
+  <link rel="stylesheet" type="text/css" href="http://chaplinjs.org/stylesheets/base.css">
+  <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="stylesheets/main.css">
+  <link rel="stylesheet" type="text/css" href="stylesheets/pygments.css">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="javascripts/main.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body class="container-fluid">
+  <div class="row-fluid">
+  <div class="span3 sidebar">
+  <header class="site-header">
+    <h1><a href="/" title="Introductory page of the documentation">Chaplin Documentation</a></h1>
+  </header>
+  <nav>
+    <form action="" class="language">
+      <fieldset>
+        <legend>Examples in:</legend>
+        <ul class="languages">
+        <li class="coffeescript">
+          <label>
+            <input type="radio" name="language" value="coffeescript" checked> CoffeeScript
+          </label>
+        </li>
+        <li class="javascript">
+          <label>
+            <input type="radio" name="language" value="javascript"> JavaScript
+          </label>
+        </li>
+        </ul>
+      </fieldset>
+    </form>
+    <h2>Modules</h2>
+    
+    <h3 id="toc_0">Core</h3>
+
+<ul>
+<li><a href="./chaplin.mediator.html" title="Global event bus">Chaplin.mediator</a></li>
+<li><a href="./chaplin.dispatcher.html" title="Broker between router and controller">Chaplin.Dispatcher</a></li>
+<li><a href="./chaplin.composer.html" title="Handles reuse of views between controller actions">Chaplin.Composer</a></li>
+<li><a href="./chaplin.layout.html" title="Top-level application view">Chaplin.Layout</a></li>
+<li><a href="./chaplin.application.html" title="Application boostrapper">Chaplin.Application</a></li>
+</ul>
+
+<h3 id="toc_1">MVC</h3>
+
+<ul>
+<li><a href="./chaplin.controller.html" title="For initializing models, collections and views">Chaplin.Controller</a></li>
+<li><a href="./chaplin.model.html" title="Chaplin&rsquo;s extension of `Backbone.Model`">Chaplin.Model</a></li>
+<li><a href="./chaplin.collection.html" title="Chaplin&rsquo;s extension of `Backbone.Collection`">Chaplin.Collection</a></li>
+<li><a href="./chaplin.view.html" title="Chaplin&rsquo;s extension of `Backbone.View`">Chaplin.View</a></li>
+<li><a href="./chaplin.collection_view.html" title="An extension of `Chaplin.View` for displaying collections">Chaplin.CollectionView</a></li>
+</ul>
+
+<h3 id="toc_2">Libs</h3>
+
+<ul>
+<li><a href="./chaplin.event_broker.html" title="Mixin for communication with the mediator">Chaplin.EventBroker</a></li>
+<li><a href="./chaplin.sync_machine.html" title="Mixin for handling sync state">Chaplin.SyncMachine</a></li>
+<li><a href="./chaplin.router.html" title="Replacement for `Backbone.Router`">Chaplin.Router</a></li>
+<li><a href="./chaplin.support.html" title="Detection of browser features">Chaplin.support</a></li>
+<li><a href="./chaplin.utils.html" title="Generic utility functions">Chaplin.utils</a></li>
+<li><a href="./chaplin.helpers.html" title="Helpers with Chaplin integration">Chaplin.helpers</a></li>
+</ul>
+
+  </nav>
+  </div>
+  <div id="content" class="span9">
+    <header class="module-info">
+    
+    <h1>
+      Chaplin.Application
+      
+        <a href="https://github.com/chaplinjs/chaplin/blob/0.10.0-pre/src/chaplin/application.coffee">&rarr; Source</a>
+      
+    </h1>
+    
+    </header>
+    <p>The <strong>Chaplin.Application</strong> object is a bootstrapper and a point of extension for the core modules of <strong>Chaplin</strong>: the <strong><a href="#initDispatcher">Dispatcher</a></strong>, the <strong><a href="#initLayout">Layout</a></strong>, the <strong><a href="#initRouter">Router</a></strong>, and the <strong><a href="#initComposer">Composer</a></strong>. The object is intended to be extended by your application.  The <code>initialize</code> method of your derived class must initialize the core modules by calling the <code>initRouter</code>, <code>initDispatcher</code>, <code>initLayout</code>, and then launching navigation with <code>startRouting</code>.</p>
+<div class="highlight"><pre><code class="coffeescript"><span class="nv">Chaplin = </span><span class="nx">require</span> <span class="s">&#39;chaplin&#39;</span>
+<span class="nv">routes = </span><span class="nx">require</span> <span class="s">&#39;routes&#39;</span>
+
+<span class="nv">module.exports = </span><span class="k">class</span> <span class="nx">Application</span> <span class="k">extends</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Application</span>
+
+  <span class="nv">initialize: </span><span class="nf">-&gt;</span>
+    <span class="c1"># No need to call super as the base class method is a no-op.</span>
+
+    <span class="c1"># Initialize core components in the required order.</span>
+    <span class="nx">@initRouter</span> <span class="nx">routes</span>
+    <span class="nx">@initDispatcher</span><span class="p">()</span>
+    <span class="nx">@initComposer</span><span class="p">()</span>
+    <span class="nx">@initLayout</span><span class="p">()</span>
+
+    <span class="c1"># Actually start routing.</span>
+    <span class="nx">@startRouting</span><span class="p">()</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">Chaplin</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;chaplin&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">routes</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;routes&#39;</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">Application</span> <span class="o">=</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Application</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// Initialize core components in the required order.</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">initRouter</span><span class="p">(</span><span class="nx">routes</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">initDispatcher</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">initComposer</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">initLayout</span><span class="p">();</span>
+
+    <span class="c1">// Actually start routing.</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">startRouting</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">Application</span><span class="p">;</span>
+</code></pre></div>
+<h2 id="properties">Properties</h2>
+
+<h3 class="module-member" id="title">title</h3>
+
+<p>This is the top-level title, handed to the layout module in the options hash. When using the <a href="./chaplin.layout.html">layout module</a>’s default title template, the value for <code>title</code> will be appended to the subtitle passed to the <code>!adjustTitle</code> event in order to construct the document’s title.</p>
+<div class="highlight"><pre><code class="coffeescript"><span class="c1"># [...]</span>
+<span class="k">class</span> <span class="nx">Application</span> <span class="k">extends</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Application</span>
+  <span class="c1"># [...]</span>
+  <span class="nv">title: </span><span class="s">&quot;Fruit&quot;</span>
+
+<span class="nx">mediator</span><span class="p">.</span><span class="nx">publish</span> <span class="s">&#39;!adjustTitle&#39;</span><span class="p">,</span> <span class="s">&#39;Apple&#39;</span>
+<span class="c1"># Document title is now &quot;Apple ­— Fruit&quot;.</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript"><span class="c1">// [...]</span>
+<span class="kd">var</span> <span class="nx">Application</span> <span class="o">=</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Application</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="c1">// [...]</span>
+  <span class="nx">title</span><span class="o">:</span> <span class="s1">&#39;Fruit&#39;</span>
+<span class="p">});</span>
+<span class="nx">mediator</span><span class="p">.</span><span class="nx">publish</span><span class="p">(</span><span class="s1">&#39;!adjustTitle&#39;</span><span class="p">,</span> <span class="s1">&#39;Apple&#39;</span><span class="p">);</span>
+<span class="c1">// Document title is now &quot;Apple ­— Fruit&quot;.</span>
+</code></pre></div>
+<h2 id="methods">Methods</h2>
+
+<h3 class="module-member" id="initDispatcher">initDispatcher([options])</h3>
+
+<p>Initializes the <strong>dispatcher</strong> module; forwards passed options to its contructor. See <strong><a href="./chaplin.dispatcher.html">Chaplin.Dispatcher</a></strong> for more information.</p>
+
+<p>To replace the dispatcher with a derived class (possibly with various extensions), you’d override the <code>initDispatcher</code> method and construct the dispatcher class as follows:</p>
+<div class="highlight"><pre><code class="coffeescript"><span class="c1"># [...]</span>
+<span class="nv">Dispatcher = </span><span class="nx">require</span> <span class="s">&#39;dispatcher&#39;</span>
+<span class="k">class</span> <span class="nx">Application</span> <span class="k">extends</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Application</span>
+  <span class="c1"># [...]</span>
+  <span class="nv">initDispatcher: </span><span class="nf">(options) -&gt;</span>
+    <span class="vi">@dispatcher = </span><span class="k">new</span> <span class="nx">Dispatcher</span> <span class="nx">options</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript"><span class="c1">// [...]</span>
+<span class="kd">var</span> <span class="nx">Dispatcher</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;dispatcher&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">Application</span> <span class="o">=</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Application</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="c1">// [...]</span>
+  <span class="nx">initDispatcher</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">dispatcher</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Dispatcher</span><span class="p">(</span><span class="nx">options</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div>
+<h3 class="module-member" id="initRouter">initRouter(routes, [options])</h3>
+
+<p>Initializes the <strong>router</strong> module; forwards passed options to its constructor. This starts the routing off by checking the current URL against all defined routes and executing the matched handler. See <strong><a href="./chaplin.router.html">Chaplin.Router</a></strong> for more information.</p>
+
+<ul>
+<li><strong>routes</strong>
+The routing function that contains the match invocations, normally located in <code>routes.coffee</code>.</li>
+</ul>
+
+<p>To replace the router with a derived class (possibly with various extensions), you’d override the <code>initRouter</code> method and construct the router class as follows (ensuring to start the routing process as well):</p>
+<div class="highlight"><pre><code class="coffeescript"><span class="c1"># [...]</span>
+<span class="nv">Router = </span><span class="nx">require</span> <span class="s">&#39;router&#39;</span>
+<span class="k">class</span> <span class="nx">Application</span> <span class="k">extends</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Application</span>
+  <span class="c1"># [...]</span>
+  <span class="nv">initRouter: </span><span class="nf">(routes, options) -&gt;</span>
+    <span class="vi">@router = </span><span class="k">new</span> <span class="nx">Router</span> <span class="nx">options</span>
+
+    <span class="c1"># Register any provided routes.</span>
+    <span class="nx">routes</span><span class="o">?</span> <span class="nx">@router</span><span class="p">.</span><span class="nx">match</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript"><span class="c1">// [...]</span>
+<span class="kd">var</span> <span class="nx">Router</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;router&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">Application</span> <span class="o">=</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Application</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="c1">// [...]</span>
+  <span class="nx">initRouter</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">routes</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">router</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Router</span><span class="p">(</span><span class="nx">options</span><span class="p">);</span>
+
+    <span class="c1">// Register any provided routes.</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">routes</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="nx">routes</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">router</span><span class="p">.</span><span class="nx">match</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div>
+<h3 class="module-member" id="startRouting">startRouting()</h3>
+
+<p>When all of the routes have been matched, call <code>startRouting()</code> to begin monitoring routing events, and dispatching routes. Invoke this method after all of the components have been initialized as this will also match the current URL and dispatch the matched route.</p>
+
+<h3 class="module-member" id="initComposer">initComposer([options])</h3>
+
+<p>Initializes the <strong>composer</strong> module; forwards passed options to its constructor. See <strong><a href="./chaplin.composer.html">Chaplin.Composer</a></strong> for more information.</p>
+
+<p>To replace the layout with a derived class (possibly with various extensions), you&#39;d override the <code>initComposer</code> method and construct the composer class as follows:</p>
+<div class="highlight"><pre><code class="coffeescript"><span class="c1"># [...]</span>
+<span class="nv">Composer = </span><span class="nx">require</span> <span class="s">&#39;composer&#39;</span>
+<span class="k">class</span> <span class="nx">Application</span> <span class="k">extends</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Application</span>
+  <span class="c1"># [...]</span>
+  <span class="nv">initComposer: </span><span class="nf">(options) -&gt;</span>
+    <span class="vi">@composer = </span><span class="k">new</span> <span class="nx">Composer</span> <span class="nx">options</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript"><span class="c1">// [...]</span>
+<span class="kd">var</span> <span class="nx">Composer</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;composer&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">Application</span> <span class="o">=</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Application</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="c1">// [...]</span>
+  <span class="nx">initComposer</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">composer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Composer</span><span class="p">(</span><span class="nx">options</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div>
+<h3 class="module-member" id="initLayout">initLayout([options])</h3>
+
+<p>Initializes the <strong>layout</strong> module, forwarding the options hash to its constructor. See <strong><a href="./chaplin.layout.html">Chaplin.Layout</a></strong> for more information.</p>
+
+<p>To replace the layout with a derived class (possibly with various extensions), you&#39;d override the <code>initLayout</code> method and construct the layout class as follows:</p>
+<div class="highlight"><pre><code class="coffeescript"><span class="c1"># [...]</span>
+<span class="nv">_ = </span><span class="nx">require</span> <span class="s">&#39;underscore&#39;</span>
+<span class="nv">Layout = </span><span class="nx">require</span> <span class="s">&#39;layout&#39;</span>
+<span class="k">class</span> <span class="nx">Application</span> <span class="k">extends</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Application</span>
+  <span class="c1"># [...]</span>
+  <span class="nv">initLayout: </span><span class="nf">(options) -&gt;</span>
+    <span class="vi">@layout = </span><span class="k">new</span> <span class="nx">Layout</span> <span class="nx">_</span><span class="p">.</span><span class="nx">defaults</span> <span class="nx">options</span><span class="p">,</span> <span class="p">{</span><span class="nx">@title</span><span class="p">}</span>
+</code></pre></div><div class="highlight"><pre><code class="javascript"><span class="c1">// [...]</span>
+<span class="kd">var</span> <span class="nx">_</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;underscore&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">Layout</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;layout&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">Application</span> <span class="o">=</span> <span class="nx">Chaplin</span><span class="p">.</span><span class="nx">Application</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="c1">// [...]</span>
+  <span class="nx">initLayout</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">layout</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Layout</span><span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">defaults</span><span class="p">(</span><span class="nx">options</span><span class="p">,</span> <span class="p">{</span><span class="nx">title</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">title</span><span class="p">}));</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div>
+  </div>
+  </div>
+</body>
+</html>
